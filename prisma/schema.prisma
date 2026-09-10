@@ -8,9 +8,199 @@ datasource db {
   provider = "postgresql"
 }
 
+// ────────────────────────────────────────────────
+// Enums
+// ────────────────────────────────────────────────
+
+enum Role {
+  EMPLOYEE
+  MANAGER
+  HR
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum DecisionAction {
+  SUBMITTED
+  APPROVED
+  REJECTED
+  CANCELLED
+  AMENDED
+}
+
+enum LeavePeriodType {
+  NONE
+  HALF_YEAR
+}
+
+enum DayPart {
+  FULL_DAY
+  FIRST_HALF
+  SECOND_HALF
+}
+
+// ────────────────────────────────────────────────
+// Core models
+// ────────────────────────────────────────────────
+
 model HealthCheck {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
 
   @@map("health_checks")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  password  String
+  role      Role     @default(EMPLOYEE)
+  managerId String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  manager User?  @relation("Reports", fields: [managerId], references: [id])
+  reports User[] @relation("Reports")
+
+  balances        LeaveBalance[]
+  requests        LeaveRequest[]      @relation("EmployeeRequests")
+  decidedRequests LeaveRequest[]      @relation("Approver")
+  auditLogs       AuditLog[]          @relation("DecisionActor")
+  carryForwards   LeaveCarryForward[]
+
+  @@index([managerId])
+  @@index([role])
+  @@map("users")
+}
+
+model LeaveType {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  description String?
+
+  deductsBalance   Boolean @default(true)
+  defaultAllowance Float
+  requiresApproval Boolean @default(true)
+
+  minAdvanceNoticeDays Int     @default(0)
+  maxDaysPerRequest    Float
+  allowsPastDates      Boolean @default(false)
+
+  periodType           LeavePeriodType @default(NONE)
+  maxRequestsPerPeriod Int?
+
+  allowsCarryForward  Boolean @default(false)
+  maxCarryForwardDays Float?
+  isActive            Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  balances      LeaveBalance[]
+  requests      LeaveRequest[]
+  carryForwards LeaveCarryForward[]
+
+  @@index([isActive])
+  @@map("leave_types")
+}
+
+model LeaveBalance {
+  id             String   @id @default(uuid())
+  userId         String
+  leaveTypeId    String
+  year           Int
+  allocated      Float
+  remaining      Float
+  carriedForward Float    @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  leaveType LeaveType @relation(fields: [leaveTypeId], references: [id])
+
+  @@unique([userId, leaveTypeId, year])
+  @@index([userId, year])
+  @@index([leaveTypeId])
+  @@map("leave_balances")
+}
+
+model LeaveRequest {
+  id              String        @id @default(uuid())
+  employeeId      String
+  leaveTypeId     String
+  startDate       DateTime      @db.Date
+  endDate         DateTime      @db.Date
+  days            Float
+  dayPart         DayPart       @default(FULL_DAY)
+  status          RequestStatus @default(PENDING)
+  note            String?
+  rejectionReason String?
+  decidedAt       DateTime?
+  decidedById     String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  employee  User       @relation("EmployeeRequests", fields: [employeeId], references: [id], onDelete: Cascade)
+  leaveType LeaveType  @relation(fields: [leaveTypeId], references: [id])
+  decidedBy User?      @relation("Approver", fields: [decidedById], references: [id])
+  auditLogs AuditLog[]
+
+  @@index([employeeId, status])
+  @@index([status, startDate, endDate])
+  @@index([employeeId, startDate, endDate])
+  @@index([decidedById])
+  @@map("leave_requests")
+}
+
+model AuditLog {
+  id        String         @id @default(uuid())
+  requestId String
+  actorId   String
+  action    DecisionAction
+  reason    String?
+  metadata  Json?
+  createdAt DateTime       @default(now())
+
+  request LeaveRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  actor   User         @relation("DecisionActor", fields: [actorId], references: [id])
+
+  @@index([requestId])
+  @@index([actorId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model LeaveCarryForward {
+  id          String   @id @default(uuid())
+  userId      String
+  leaveTypeId String
+  fromYear    Int
+  toYear      Int
+  daysCarried Float
+  createdAt   DateTime @default(now())
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  leaveType LeaveType @relation(fields: [leaveTypeId], references: [id])
+
+  @@unique([userId, leaveTypeId, fromYear])
+  @@index([toYear])
+  @@map("leave_carry_forwards")
+}
+
+model PublicHoliday {
+  id        String   @id @default(uuid())
+  date      DateTime @unique @db.Date
+  name      String
+  year      Int
+  createdAt DateTime @default(now())
+
+  @@index([year, date])
+  @@map("public_holidays")
 }
