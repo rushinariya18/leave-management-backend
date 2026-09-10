@@ -3,7 +3,7 @@
 /node_modules
 /build
 
-# Prisma generated client (regenerated via `npx prisma generate`)
+# Prisma generated client (regenerated via `yarn prisma:generate`)
 /src/generated/prisma
 
 # IMPLEMENTATION_PLAN.md

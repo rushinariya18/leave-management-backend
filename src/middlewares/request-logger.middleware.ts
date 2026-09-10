@@ -13,7 +13,7 @@ export function requestLogger(req: Request, res: Response, next: NextFunction) {
       url: req.originalUrl,
       statusCode: res.statusCode,
       durationMs: Date.now() - startedAt,
-      userId: req.user ? req.user._id.toString() : 'anonymous',
+      // userId: req.user ? req.user._id.toString() : 'anonymous',
     });
   });
 

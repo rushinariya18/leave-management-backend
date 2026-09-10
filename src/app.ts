@@ -1,9 +1,7 @@
-import 'dotenv/config';
 import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 import { corsOptions } from './config/cors.js';
-import { logger } from './config/logger.js';
 import { errorHandler } from './middlewares/error.middleware.js';
 import { notFound } from './middlewares/not-found.middleware.js';
 import { globalRateLimiter } from './middlewares/rate-limit.middleware.js';
@@ -13,7 +11,6 @@ import { requestLogger } from './middlewares/request-logger.middleware.js';
 import { sendSuccess } from './utils/response.js';
 
 const app = express();
-const PORT = process.env.PORT ?? 3000;
 
 app.use(requestContext);
 app.use(helmet());
@@ -33,6 +30,4 @@ app.get('/json-check', (_req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  logger.info(`Server running on http://localhost:${PORT}`);
-});
+export default app;

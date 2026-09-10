@@ -1,0 +1,16 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+  runtime  = "nodejs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model HealthCheck {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  @@map("health_checks")
+}
