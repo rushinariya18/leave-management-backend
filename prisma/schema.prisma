@@ -56,24 +56,26 @@ model HealthCheck {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String
-  password  String
-  role      Role     @default(EMPLOYEE)
-  managerId String?
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(uuid())
+  email        String   @unique
+  name         String
+  password     String
+  role         Role     @default(EMPLOYEE)
+  managerId    String?
+  isActive     Boolean  @default(true)
+  tokenVersion Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   manager User?  @relation("Reports", fields: [managerId], references: [id])
   reports User[] @relation("Reports")
 
-  balances        LeaveBalance[]
-  requests        LeaveRequest[]      @relation("EmployeeRequests")
-  decidedRequests LeaveRequest[]      @relation("Approver")
-  auditLogs       AuditLog[]          @relation("DecisionActor")
-  carryForwards   LeaveCarryForward[]
+  balances          LeaveBalance[]
+  requests          LeaveRequest[]      @relation("EmployeeRequests")
+  decidedRequests   LeaveRequest[]      @relation("Approver")
+  auditLogs         AuditLog[]          @relation("DecisionActor")
+  carryForwards     LeaveCarryForward[]
+  passwordResetOtps PasswordResetOtp[]
 
   @@index([managerId])
   @@index([role])
@@ -203,4 +205,19 @@ model PublicHoliday {
 
   @@index([year, date])
   @@map("public_holidays")
+}
+
+model PasswordResetOtp {
+  id         String    @id @default(uuid())
+  userId     String
+  otp        String
+  expiresAt  DateTime
+  consumedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, consumedAt])
+  @@map("password_reset_otps")
 }

@@ -8,7 +8,7 @@ const errorLogger = createModuleLogger('error-handler');
 function errorContext(req: Request) {
   return {
     requestId: req.id,
-    userId: req.user?._id.toString() ?? 'anonymous',
+    userId: req.user?.id ?? 'anonymous',
     method: req.method,
     url: req.originalUrl,
   };
