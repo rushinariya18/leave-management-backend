@@ -1,11 +1,7 @@
 import { prisma } from '../../config/prisma.js';
 import { ApiError } from '../../utils/ApiError.js';
 import { ERROR_MESSAGES } from '../../constants/messages.js';
-import type {
-  CreateLeaveTypeInput,
-  ListLeaveTypesQueryInput,
-  UpdateLeaveTypeInput,
-} from './leave-type.validation.js';
+import type { CreateLeaveTypeInput, UpdateLeaveTypeInput } from './leave-type.validation.js';
 
 export async function createLeaveType(data: CreateLeaveTypeInput) {
   const existing = await prisma.leaveType.findUnique({ where: { name: data.name } });
@@ -39,8 +35,8 @@ export async function deleteLeaveType(id: string) {
   await prisma.leaveType.update({ where: { id }, data: { isActive: false } });
 }
 
-export async function listLeaveTypes(query: ListLeaveTypesQueryInput) {
-  const where = query.isActive ? { isActive: query.isActive === 'true' } : {};
+export async function listLeaveTypes() {
+  const where = { isActive: true };
   return prisma.leaveType.findMany({ where, orderBy: { name: 'asc' } });
 }
 

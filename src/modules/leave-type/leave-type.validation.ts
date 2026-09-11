@@ -37,15 +37,10 @@ export const updateLeaveTypeSchema = z
     message: 'At least one field must be provided',
   });
 
-export const listLeaveTypesQuerySchema = z.object({
-  isActive: z.enum(['true', 'false']).optional(),
-});
-
 export const leaveTypeIdParamsSchema = z.object({
   id: z.uuid(V.INVALID_LEAVE_TYPE_ID),
 });
 
 export type CreateLeaveTypeInput = z.infer<typeof createLeaveTypeSchema>;
 export type UpdateLeaveTypeInput = z.infer<typeof updateLeaveTypeSchema>;
-export type ListLeaveTypesQueryInput = z.infer<typeof listLeaveTypesQuerySchema>;
 export type LeaveTypeIdParams = z.infer<typeof leaveTypeIdParamsSchema>;
