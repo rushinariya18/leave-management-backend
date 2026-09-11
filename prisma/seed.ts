@@ -6,7 +6,7 @@ import { Role } from '../src/generated/prisma/client.js';
 
 async function seedHrUser(): Promise<void> {
   const email = 'hr@yopmail.com';
-  
+
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
     console.log(`User with email ${email} already exists, skipping.`);

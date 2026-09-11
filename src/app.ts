@@ -8,6 +8,7 @@ import { globalRateLimiter } from './middlewares/rate-limit.middleware.js';
 import { requestContext } from './middlewares/request-context.middleware.js';
 import { requestLogger } from './middlewares/request-logger.middleware.js';
 import authRoutes from './modules/auth/auth.routes.js';
+import userRoutes from './modules/user/user.routes.js';
 
 import { sendSuccess } from './utils/response.js';
 
@@ -24,11 +25,12 @@ app.get('/health-check', (_req, res) => {
   sendSuccess(res, 200, 'Service is healthy');
 });
 
-app.get('/json-check', (_req, res) => {
-  sendSuccess(res, 200, 'JSON payload is valid', { message: 'JSON payload is valid' });
-});
+// app.get('/json-check', (_req, res) => {
+//   sendSuccess(res, 200, 'JSON payload is valid', { message: 'JSON payload is valid' });
+// });
 
-app.use('/api/auth', authRoutes);
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/users', userRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

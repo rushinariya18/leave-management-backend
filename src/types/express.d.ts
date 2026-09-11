@@ -9,6 +9,7 @@ declare global {
         role: Role;
         tokenVersion: number;
       };
+      validatedQuery?: Record<string, unknown>;
     }
   }
 }
