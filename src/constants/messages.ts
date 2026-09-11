@@ -7,6 +7,14 @@ export const VALIDATION_MESSAGES = {
   NEW_PASSWORD_MIN_LENGTH: 'New password must be at least 8 characters long',
   OTP_INVALID_FORMAT: 'OTP must be exactly 6 digits',
   INVALID_MANAGER_ID: 'Manager id must be a valid UUID',
+  INVALID_HOLIDAY_ID: 'Holiday id must be a valid UUID',
+  HOLIDAY_DATE_INVALID: 'Date must be a valid date in YYYY-MM-DD format',
+  HOLIDAY_NAME_MIN_LENGTH: 'Holiday name must be at least 2 characters long',
+  HOLIDAY_YEAR_INVALID: 'Year must be a valid 4-digit year',
+  INVALID_LEAVE_TYPE_ID: 'Leave type id must be a valid UUID',
+  LEAVE_TYPE_NAME_MIN_LENGTH: 'Leave type name must be at least 2 characters long',
+  LEAVE_TYPE_ALLOWANCE_INVALID: 'Default allowance must be a non-negative number',
+  LEAVE_TYPE_MAX_DAYS_INVALID: 'Max days per request must be a positive number',
 };
 
 export const ERROR_MESSAGES = {
@@ -19,6 +27,10 @@ export const ERROR_MESSAGES = {
   INVALID_MANAGER: 'The specified manager is invalid',
   CANNOT_ASSIGN_SELF_AS_MANAGER: 'A user cannot be assigned as their own manager',
   CANNOT_DEACTIVATE_SELF: 'You cannot deactivate your own account',
+  HOLIDAY_NOT_FOUND: 'Public holiday not found',
+  HOLIDAY_ALREADY_EXISTS: 'A public holiday already exists on this date',
+  LEAVE_TYPE_NOT_FOUND: 'Leave type not found',
+  LEAVE_TYPE_ALREADY_EXISTS: 'A leave type with this name already exists',
 };
 
 export const SUCCESS_MESSAGES = {
@@ -35,4 +47,13 @@ export const SUCCESS_MESSAGES = {
   MANAGER_ASSIGNED_SUCCESS: 'Manager assigned successfully',
   MANAGERS_FETCHED_SUCCESS: 'Managers fetched successfully',
   USERS_FETCHED_SUCCESS: 'Users fetched successfully',
+  HOLIDAY_CREATED_SUCCESS: 'Public holiday created successfully',
+  HOLIDAY_UPDATED_SUCCESS: 'Public holiday updated successfully',
+  HOLIDAY_DELETED_SUCCESS: 'Public holiday deleted successfully',
+  HOLIDAYS_FETCHED_SUCCESS: 'Public holidays fetched successfully',
+  LEAVE_TYPE_CREATED_SUCCESS: 'Leave type created successfully',
+  LEAVE_TYPE_UPDATED_SUCCESS: 'Leave type updated successfully',
+  LEAVE_TYPE_DELETED_SUCCESS: 'Leave type deleted successfully',
+  LEAVE_TYPE_FETCHED_SUCCESS: 'Leave type fetched successfully',
+  LEAVE_TYPES_FETCHED_SUCCESS: 'Leave types fetched successfully',
 };

@@ -10,6 +10,7 @@ declare global {
         tokenVersion: number;
       };
       validatedQuery?: Record<string, unknown>;
+      validatedParams?: Record<string, unknown>;
     }
   }
 }

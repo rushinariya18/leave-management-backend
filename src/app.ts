@@ -8,6 +8,8 @@ import { globalRateLimiter } from './middlewares/rate-limit.middleware.js';
 import { requestContext } from './middlewares/request-context.middleware.js';
 import { requestLogger } from './middlewares/request-logger.middleware.js';
 import authRoutes from './modules/auth/auth.routes.js';
+import leaveTypeRoutes from './modules/leave-type/leave-type.routes.js';
+import publicHolidayRoutes from './modules/public-holiday/public-holiday.routes.js';
 import userRoutes from './modules/user/user.routes.js';
 
 import { sendSuccess } from './utils/response.js';
@@ -31,6 +33,8 @@ app.get('/health-check', (_req, res) => {
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/public-holidays', publicHolidayRoutes);
+app.use('/api/v1/leave-types', leaveTypeRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
