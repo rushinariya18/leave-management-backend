@@ -21,7 +21,7 @@ export const authenticate = asyncHandler(async (req, _res, next) => {
   try {
     payload = verifyToken(token);
   } catch {
-    throw new ApiError(401, 'Invalid or expired token');
+    throw new ApiError(401, 'Unauthorized access.');
   }
 
   const user = await prisma.user.findUnique({

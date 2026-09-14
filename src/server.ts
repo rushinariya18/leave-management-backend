@@ -2,6 +2,7 @@ import 'dotenv/config';
 import app from './app.js';
 import { logger } from './config/logger.js';
 import { disconnectPrisma, prisma } from './config/prisma.js';
+import { startLeaveBalanceSyncJob } from './jobs/leave-balance-sync.job.js';
 
 const PORT = process.env.PORT ?? 3000;
 
@@ -23,8 +24,13 @@ async function bootstrap(): Promise<void> {
     logger.info(`Server running on http://localhost:${PORT}`);
   });
 
+  const leaveBalanceSyncTask = startLeaveBalanceSyncJob();
+  logger.info('Leave balance sync cron job scheduled');
+
   async function shutdown(signal: string): Promise<void> {
     logger.info(`${signal} received: starting graceful shutdown`);
+
+    leaveBalanceSyncTask.stop();
 
     await new Promise<void>((resolve) => {
       server.close((err) => {

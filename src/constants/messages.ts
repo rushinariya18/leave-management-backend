@@ -15,6 +15,13 @@ export const VALIDATION_MESSAGES = {
   LEAVE_TYPE_NAME_MIN_LENGTH: 'Leave type name must be at least 2 characters long',
   LEAVE_TYPE_ALLOWANCE_INVALID: 'Default allowance must be a non-negative number',
   LEAVE_TYPE_MAX_DAYS_INVALID: 'Max days per request must be a positive number',
+  INVALID_LEAVE_REQUEST_ID: 'Leave request id must be a valid UUID',
+  LEAVE_REQUEST_DATE_INVALID: 'Date must be a valid date in YYYY-MM-DD format',
+  LEAVE_REQUEST_END_BEFORE_START: 'End date must be on or after start date',
+  LEAVE_REQUEST_HALF_DAY_MULTI_DATE: 'A half-day request must have the same start and end date',
+  LEAVE_REQUEST_NOTE_TOO_LONG: 'Note must be at most 500 characters long',
+  REJECTION_REASON_REQUIRED: 'Rejection reason is required and must be at least 3 characters',
+  CALENDAR_MONTH_INVALID: 'Month must be in YYYY-MM format',
 };
 
 export const ERROR_MESSAGES = {
@@ -31,6 +38,21 @@ export const ERROR_MESSAGES = {
   HOLIDAY_ALREADY_EXISTS: 'A public holiday already exists on this date',
   LEAVE_TYPE_NOT_FOUND: 'Leave type not found',
   LEAVE_TYPE_ALREADY_EXISTS: 'A leave type with this name already exists',
+  LEAVE_REQUEST_NOT_FOUND: 'Leave request not found',
+  LEAVE_TYPE_INACTIVE: 'This leave type is not currently active',
+  LEAVE_REQUEST_CROSS_YEAR_NOT_ALLOWED: 'Leave requests cannot span across calendar years',
+  LEAVE_REQUEST_PAST_DATE_NOT_ALLOWED: 'This leave type does not allow requests for past dates',
+  LEAVE_REQUEST_ZERO_DAYS: 'The selected date range contains no working days to request',
+  LEAVE_REQUEST_HALF_DAY_ON_NON_WORKING_DAY:
+    'Cannot request a half-day on a weekend or public holiday',
+  LEAVE_REQUEST_PERIOD_LIMIT_EXCEEDED:
+    'You have already used the maximum allowed requests for this leave type in this period',
+  INSUFFICIENT_LEAVE_BALANCE: 'Insufficient leave balance for this request',
+  NO_LEAVE_BALANCE_ALLOCATED: 'No leave balance has been allocated for this leave type this year',
+  LEAVE_REQUEST_NOT_PENDING: 'This leave request is no longer pending',
+  LEAVE_REQUEST_NOT_CANCELLABLE: 'Only pending or approved leave requests can be cancelled',
+  CANNOT_APPROVE_OWN_REQUEST: 'You cannot approve or reject your own leave request',
+  NOT_YOUR_TEAM_MEMBER: 'You do not have permission to act on this employee’s request',
 };
 
 export const SUCCESS_MESSAGES = {
@@ -56,4 +78,13 @@ export const SUCCESS_MESSAGES = {
   LEAVE_TYPE_DELETED_SUCCESS: 'Leave type deleted successfully',
   LEAVE_TYPE_FETCHED_SUCCESS: 'Leave type fetched successfully',
   LEAVE_TYPES_FETCHED_SUCCESS: 'Leave types fetched successfully',
+  LEAVE_BALANCES_FETCHED_SUCCESS: 'Leave balances fetched successfully',
+  LEAVE_REQUEST_CREATED_SUCCESS: 'Leave request submitted successfully',
+  LEAVE_REQUESTS_FETCHED_SUCCESS: 'Leave requests fetched successfully',
+  LEAVE_REQUEST_FETCHED_SUCCESS: 'Leave request fetched successfully',
+  LEAVE_REQUEST_CANCELLED_SUCCESS: 'Leave request cancelled successfully',
+  LEAVE_REQUEST_APPROVED_SUCCESS: 'Leave request approved successfully',
+  LEAVE_REQUEST_REJECTED_SUCCESS: 'Leave request rejected successfully',
+  AUDIT_LOGS_FETCHED_SUCCESS: 'Audit logs fetched successfully',
+  LEAVE_CALENDAR_FETCHED_SUCCESS: 'Leave calendar fetched successfully',
 };
