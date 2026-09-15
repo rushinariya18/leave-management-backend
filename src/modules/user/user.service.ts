@@ -4,6 +4,7 @@ import { Role } from '../../generated/prisma/client.js';
 import { ApiError } from '../../utils/ApiError.js';
 import { ERROR_MESSAGES } from '../../constants/messages.js';
 import { buildPaginationMeta, parsePagination } from '../../utils/pagination.js';
+import { createInitialLeaveBalancesForUser } from '../leave-balance/leave-balance.service.js';
 import type {
   AssignManagerInput,
   ChangePasswordInput,
@@ -23,6 +24,7 @@ const userSelect = {
   role: true,
   managerId: true,
   isActive: true,
+  joinDate: true,
   createdAt: true,
   updatedAt: true,
 } as const;
@@ -90,15 +92,21 @@ export async function createUser(data: CreateUserInput) {
 
   const hashedPassword = await bcrypt.hash(data.password, getSaltRounds());
 
-  return prisma.user.create({
-    data: {
-      name: data.name,
-      email: data.email,
-      password: hashedPassword,
-      role: data.role,
-      managerId: data.managerId ?? null,
-    },
-    select: userSelect,
+  return prisma.$transaction(async (tx) => {
+    const user = await tx.user.create({
+      data: {
+        name: data.name,
+        email: data.email,
+        password: hashedPassword,
+        role: data.role,
+        managerId: data.managerId ?? null,
+      },
+      select: userSelect,
+    });
+
+    await createInitialLeaveBalancesForUser(user.id, user.joinDate, new Date().getUTCFullYear(), tx);
+
+    return user;
   });
 }
 

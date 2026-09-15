@@ -12,6 +12,45 @@ export interface LeaveBalanceSyncResult {
   failed: number;
 }
 
+export function calculateProratedAllowance(defaultAllowance: number, joinDate: Date): number {
+  const joinMonth = joinDate.getUTCMonth() + 1; // 1-12
+  const monthsRemaining = 12 - (joinMonth - 1);
+  const raw = defaultAllowance * (monthsRemaining / 12);
+
+  return Math.round(raw * 2) / 2; // nearest 0.5
+}
+
+export async function createInitialLeaveBalancesForUser(
+  userId: string,
+  joinDate: Date,
+  year: number,
+  tx: Pick<typeof prisma, 'leaveType' | 'leaveBalance'> = prisma,
+): Promise<void> {
+  const activeLeaveTypes = await tx.leaveType.findMany({
+    where: { isActive: true },
+    orderBy: { name: 'asc' },
+  });
+
+  if (activeLeaveTypes.length === 0) {
+    return;
+  }
+
+  const balancesData = activeLeaveTypes.map((leaveType) => {
+    const allocated = calculateProratedAllowance(leaveType.defaultAllowance, joinDate);
+
+    return {
+      userId,
+      leaveTypeId: leaveType.id,
+      year,
+      allocated,
+      remaining: allocated,
+      carriedForward: 0,
+    };
+  });
+
+  await tx.leaveBalance.createMany({ data: balancesData });
+}
+
 export async function getMyLeaveBalances(userId: string) {
   const year = new Date().getFullYear();
 
