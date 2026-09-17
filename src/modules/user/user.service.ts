@@ -5,6 +5,7 @@ import { ApiError } from '../../utils/ApiError.js';
 import { ERROR_MESSAGES } from '../../constants/messages.js';
 import { buildPaginationMeta, parsePagination } from '../../utils/pagination.js';
 import { createInitialLeaveBalancesForUser } from '../leave-balance/leave-balance.service.js';
+import { listMyLeaveRequests } from '../leave-request/leave-request.service.js';
 import type {
   AssignManagerInput,
   ChangePasswordInput,
@@ -12,6 +13,11 @@ import type {
   ListUsersQueryInput,
   UpdateProfileInput,
 } from './user.validation.js';
+
+interface Actor {
+  id: string;
+  role: Role;
+}
 
 function getSaltRounds(): number {
   return Number(process.env.BCRYPT_SALT_ROUNDS) || 10;
@@ -224,8 +230,10 @@ function buildUserOrderBy(
   return { [sortBy ?? 'createdAt']: order };
 }
 
-export async function listUsers(query: ListUsersQueryInput) {
+export async function listUsers(query: ListUsersQueryInput, actor: Actor) {
   const { page, limit, skip } = parsePagination(query);
+
+  const managerId = actor.role === Role.MANAGER ? actor.id : query.managerId;
 
   const where = {
     ...(query.search
@@ -238,7 +246,7 @@ export async function listUsers(query: ListUsersQueryInput) {
       : {}),
     ...(query.role ? { role: query.role } : {}),
     ...(query.isActive !== undefined ? { isActive: query.isActive } : {}),
-    ...(query.managerId ? { managerId: query.managerId } : {}),
+    ...(managerId ? { managerId } : {}),
   };
 
   const orderBy = buildUserOrderBy(query.sortBy, query.sortOrder);
@@ -249,4 +257,24 @@ export async function listUsers(query: ListUsersQueryInput) {
   ]);
 
   return { items, pagination: buildPaginationMeta(total, page, limit) };
+}
+
+export async function getUserById(targetUserId: string, actor: Actor) {
+  const user = await prisma.user.findUnique({ where: { id: targetUserId }, select: userSelect });
+
+  if (!user) {
+    throw new ApiError(404, ERROR_MESSAGES.USER_NOT_FOUND);
+  }
+
+  if (actor.role === Role.MANAGER && user.managerId !== actor.id) {
+    throw new ApiError(403, ERROR_MESSAGES.EMPLOYEE_NOT_IN_YOUR_TEAM);
+  }
+
+  const currentYear = new Date().getUTCFullYear();
+  const currentYearLeaveRequests = await listMyLeaveRequests(targetUserId, {
+    startDate: `${currentYear}-01-01`,
+    endDate: `${currentYear}-12-31`,
+  });
+
+  return { ...user, currentYearLeaveRequests };
 }

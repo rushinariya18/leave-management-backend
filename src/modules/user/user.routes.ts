@@ -3,6 +3,7 @@ import { Role } from '../../generated/prisma/client.js';
 import { authenticate } from '../../middlewares/auth.middleware.js';
 import { authorize } from '../../middlewares/authorize.middleware.js';
 import { validate } from '../../middlewares/validate.middleware.js';
+import { validateParams } from '../../middlewares/validateParams.middleware.js';
 import { validateQuery } from '../../middlewares/validateQuery.middleware.js';
 import * as userController from './user.controller.js';
 import {
@@ -12,6 +13,7 @@ import {
   listUsersQuerySchema,
   updateProfileSchema,
   updateStatusSchema,
+  userIdParamsSchema,
 } from './user.validation.js';
 
 const router = Router();
@@ -30,9 +32,17 @@ router.get('/managers', authenticate, authorize(Role.HR), userController.listMan
 router.get(
   '/',
   authenticate,
-  authorize(Role.HR),
+  authorize(Role.HR, Role.MANAGER),
   validateQuery(listUsersQuerySchema),
   userController.listUsers,
+);
+
+router.get(
+  '/:id',
+  authenticate,
+  authorize(Role.HR, Role.MANAGER),
+  validateParams(userIdParamsSchema),
+  userController.getUserById,
 );
 
 router.post(

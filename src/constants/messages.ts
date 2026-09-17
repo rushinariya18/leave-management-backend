@@ -56,6 +56,7 @@ export const ERROR_MESSAGES = {
   LEAVE_REQUEST_NOT_CANCELLABLE: 'Only pending or approved leave requests can be cancelled',
   CANNOT_APPROVE_OWN_REQUEST: 'You cannot approve or reject your own leave request',
   NOT_YOUR_TEAM_MEMBER: 'You do not have permission to act on this employee’s request',
+  EMPLOYEE_NOT_IN_YOUR_TEAM: 'This employee is not part of your team',
 };
 
 export const SUCCESS_MESSAGES = {
@@ -72,6 +73,7 @@ export const SUCCESS_MESSAGES = {
   MANAGER_ASSIGNED_SUCCESS: 'Manager assigned successfully',
   MANAGERS_FETCHED_SUCCESS: 'Managers fetched successfully',
   USERS_FETCHED_SUCCESS: 'Users fetched successfully',
+  USER_FETCHED_SUCCESS: 'User fetched successfully',
   HOLIDAY_CREATED_SUCCESS: 'Public holiday created successfully',
   HOLIDAY_UPDATED_SUCCESS: 'Public holiday updated successfully',
   HOLIDAY_DELETED_SUCCESS: 'Public holiday deleted successfully',

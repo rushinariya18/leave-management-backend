@@ -27,6 +27,10 @@ export const assignManagerSchema = z.object({
   managerId: z.uuid(V.INVALID_MANAGER_ID).nullable(),
 });
 
+export const userIdParamsSchema = z.object({
+  id: z.uuid(V.INVALID_EMPLOYEE_ID),
+});
+
 export const listUsersQuerySchema = z.object({
   search: z.string().trim().min(1).optional(),
   role: z.enum(Role).optional(),
@@ -47,3 +51,4 @@ export type CreateUserInput = z.infer<typeof createUserSchema>;
 export type UpdateStatusInput = z.infer<typeof updateStatusSchema>;
 export type AssignManagerInput = z.infer<typeof assignManagerSchema>;
 export type ListUsersQueryInput = z.infer<typeof listUsersQuerySchema>;
+export type UserIdParams = z.infer<typeof userIdParamsSchema>;

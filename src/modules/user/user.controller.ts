@@ -3,7 +3,7 @@ import { asyncHandler } from '../../utils/asyncHandler.js';
 import { sendSuccess } from '../../utils/response.js';
 import { SUCCESS_MESSAGES } from '../../constants/messages.js';
 import * as userService from './user.service.js';
-import type { ListUsersQueryInput } from './user.validation.js';
+import type { ListUsersQueryInput, UserIdParams } from './user.validation.js';
 
 export const getMe = asyncHandler(async (req: Request, res: Response) => {
   const user = await userService.getMe(String(req.user!.id));
@@ -45,6 +45,12 @@ export const listManagers = asyncHandler(async (req: Request, res: Response) => 
 });
 
 export const listUsers = asyncHandler(async (req: Request, res: Response) => {
-  const result = await userService.listUsers(req.validatedQuery as ListUsersQueryInput);
+  const result = await userService.listUsers(req.validatedQuery as ListUsersQueryInput, req.user!);
   sendSuccess(res, 200, SUCCESS_MESSAGES.USERS_FETCHED_SUCCESS, result);
+});
+
+export const getUserById = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.validatedParams as unknown as UserIdParams;
+  const user = await userService.getUserById(id, req.user!);
+  sendSuccess(res, 200, SUCCESS_MESSAGES.USER_FETCHED_SUCCESS, user);
 });

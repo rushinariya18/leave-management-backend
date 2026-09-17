@@ -559,6 +559,7 @@ export async function getTeamCalendar(actor: Actor, month: string) {
       endDate: true,
       dayPart: true,
       status: true,
+      note: true,
       employee: { select: { id: true, name: true } },
       leaveType: { select: { id: true, name: true } },
     },
