@@ -22,10 +22,13 @@ export const VALIDATION_MESSAGES = {
   LEAVE_REQUEST_NOTE_TOO_LONG: 'Note must be at most 500 characters long',
   REJECTION_REASON_REQUIRED: 'Rejection reason is required and must be at least 3 characters',
   CALENDAR_MONTH_INVALID: 'Month must be in YYYY-MM format',
+  INVALID_EMPLOYEE_ID: 'Employee id must be a valid UUID',
+  CALENDAR_ROLE_REQUIRES_EMPLOYEE_ID: 'employeeId is required when role is provided',
 };
 
 export const ERROR_MESSAGES = {
   USER_NOT_FOUND: 'User not found',
+  MANAGER_NOT_FOUND: 'Manager not found',
   EMAIL_ALREADY_REGISTERED: 'Email is already registered',
   INVALID_CREDENTIALS: 'Invalid email or password',
   INVALID_OR_EXPIRED_OTP: 'Invalid or expired OTP',
@@ -79,6 +82,7 @@ export const SUCCESS_MESSAGES = {
   LEAVE_TYPE_FETCHED_SUCCESS: 'Leave type fetched successfully',
   LEAVE_TYPES_FETCHED_SUCCESS: 'Leave types fetched successfully',
   LEAVE_BALANCES_FETCHED_SUCCESS: 'Leave balances fetched successfully',
+  LEAVE_BALANCE_HISTORY_FETCHED_SUCCESS: 'Leave balance history fetched successfully',
   LEAVE_REQUEST_CREATED_SUCCESS: 'Leave request submitted successfully',
   LEAVE_REQUESTS_FETCHED_SUCCESS: 'Leave requests fetched successfully',
   LEAVE_REQUEST_FETCHED_SUCCESS: 'Leave request fetched successfully',
@@ -87,4 +91,5 @@ export const SUCCESS_MESSAGES = {
   LEAVE_REQUEST_REJECTED_SUCCESS: 'Leave request rejected successfully',
   AUDIT_LOGS_FETCHED_SUCCESS: 'Audit logs fetched successfully',
   LEAVE_CALENDAR_FETCHED_SUCCESS: 'Leave calendar fetched successfully',
+  HR_CALENDAR_FETCHED_SUCCESS: 'HR calendar fetched successfully',
 };

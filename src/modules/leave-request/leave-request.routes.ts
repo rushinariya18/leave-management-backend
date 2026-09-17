@@ -10,6 +10,7 @@ import {
   calendarQuerySchema,
   cancelLeaveRequestSchema,
   createLeaveRequestSchema,
+  hrCalendarQuerySchema,
   leaveRequestIdParamsSchema,
   myLeaveRequestsQuerySchema,
   rejectLeaveRequestSchema,
@@ -46,6 +47,14 @@ router.get(
   authorize(Role.EMPLOYEE, Role.MANAGER),
   validateQuery(calendarQuerySchema),
   leaveRequestController.getTeamCalendar,
+);
+
+router.get(
+  '/calendar/hr',
+  authenticate,
+  authorize(Role.HR),
+  validateQuery(hrCalendarQuerySchema),
+  leaveRequestController.getHrCalendar,
 );
 
 router.get(

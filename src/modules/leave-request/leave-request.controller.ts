@@ -6,6 +6,7 @@ import * as leaveRequestService from './leave-request.service.js';
 import type {
   CalendarQueryInput,
   CreateLeaveRequestInput,
+  HrCalendarQueryInput,
   LeaveRequestIdParams,
   MyLeaveRequestsQueryInput,
 } from './leave-request.validation.js';
@@ -31,6 +32,12 @@ export const getTeamCalendar = asyncHandler(async (req: Request, res: Response) 
   const { month } = req.validatedQuery as unknown as CalendarQueryInput;
   const result = await leaveRequestService.getTeamCalendar(req.user!, month);
   sendSuccess(res, 200, SUCCESS_MESSAGES.LEAVE_CALENDAR_FETCHED_SUCCESS, result);
+});
+
+export const getHrCalendar = asyncHandler(async (req: Request, res: Response) => {
+  const query = req.validatedQuery as unknown as HrCalendarQueryInput;
+  const result = await leaveRequestService.getHrCalendar(query);
+  sendSuccess(res, 200, SUCCESS_MESSAGES.HR_CALENDAR_FETCHED_SUCCESS, result);
 });
 
 export const getLeaveRequest = asyncHandler(async (req: Request, res: Response) => {

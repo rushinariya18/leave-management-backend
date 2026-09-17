@@ -180,6 +180,27 @@ model AuditLog {
   @@map("audit_logs")
 }
 
+// Populated exclusively by PostgreSQL triggers (see migration SQL), not by
+// application code. This means it captures every row change on the audited
+// tables — including ones made outside the app (psql, a DB GUI, another
+// service) — which Prisma-level logging alone would miss.
+model DataChangeLog {
+  id         BigInt   @id @default(autoincrement())
+  tableName  String
+  recordId   String?
+  operation  String
+  oldData    Json?
+  newData    Json?
+  changedBy  String?
+  clientAddr String?
+  appName    String?
+  changedAt  DateTime @default(now())
+
+  @@index([tableName, recordId])
+  @@index([changedAt])
+  @@map("data_change_logs")
+}
+
 model LeaveCarryForward {
   id          String   @id @default(uuid())
   userId      String

@@ -6,11 +6,13 @@ import {
   DecisionAction,
   LeavePeriodType,
   RequestStatus,
+  Role,
   type LeaveType,
   type PublicHoliday,
 } from '../../generated/prisma/client.js';
 import type {
   CreateLeaveRequestInput,
+  HrCalendarQueryInput,
   MyLeaveRequestsQueryInput,
 } from './leave-request.validation.js';
 
@@ -55,6 +57,14 @@ function getHalfYearWindow(date: Date): { start: Date; end: Date } {
   return isFirstHalf
     ? { start: new Date(Date.UTC(year, 0, 1)), end: new Date(Date.UTC(year, 5, 30)) }
     : { start: new Date(Date.UTC(year, 6, 1)), end: new Date(Date.UTC(year, 11, 31)) };
+}
+
+function getMonthRange(month: string): { start: Date; end: Date } {
+  const [year, monthNum] = month.split('-').map(Number);
+  return {
+    start: new Date(Date.UTC(year, monthNum - 1, 1)),
+    end: new Date(Date.UTC(year, monthNum, 0)),
+  };
 }
 
 // ---- business-rule helpers ---------------------------------------------
@@ -518,9 +528,7 @@ export async function getAuditLogsForRequest(requestId: string, actor: Actor) {
 }
 
 export async function getTeamCalendar(actor: Actor, month: string) {
-  const [year, monthNum] = month.split('-').map(Number);
-  const monthStart = new Date(Date.UTC(year, monthNum - 1, 1));
-  const monthEnd = new Date(Date.UTC(year, monthNum, 0));
+  const { start: monthStart, end: monthEnd } = getMonthRange(month);
 
   let teamManagerId: string | null;
 
@@ -555,5 +563,56 @@ export async function getTeamCalendar(actor: Actor, month: string) {
       leaveType: { select: { id: true, name: true } },
     },
     orderBy: { startDate: 'asc' },
+  });
+}
+
+export async function getHrCalendar(query: HrCalendarQueryInput) {
+  const { month, employeeId, role } = query;
+  const { start: monthStart, end: monthEnd } = getMonthRange(month);
+
+  let employeeFilter: { id: string } | { OR: [{ id: string }, { managerId: string }] } | undefined;
+
+  if (employeeId && role === Role.MANAGER) {
+    const manager = await prisma.user.findUnique({
+      where: { id: employeeId },
+      select: { id: true, role: true },
+    });
+
+    if (!manager || manager.role !== Role.MANAGER) {
+      throw new ApiError(400, ERROR_MESSAGES.MANAGER_NOT_FOUND);
+    }
+
+    employeeFilter = { OR: [{ id: employeeId }, { managerId: employeeId }] };
+  } else if (employeeId) {
+    const employee = await prisma.user.findUnique({
+      where: { id: employeeId },
+      select: { id: true },
+    });
+
+    if (!employee) {
+      throw new ApiError(404, ERROR_MESSAGES.USER_NOT_FOUND);
+    }
+
+    employeeFilter = { id: employeeId };
+  }
+
+  return prisma.leaveRequest.findMany({
+    where: {
+      status: { in: [RequestStatus.PENDING, RequestStatus.APPROVED] },
+      startDate: { lte: monthEnd },
+      endDate: { gte: monthStart },
+      ...(employeeFilter ? { employee: employeeFilter } : {}),
+    },
+    select: {
+      id: true,
+      startDate: true,
+      endDate: true,
+      dayPart: true,
+      status: true,
+      note: true,
+      employee: { select: { id: true, name: true, manager: { select: { id: true, name: true } } } },
+      leaveType: { select: { id: true, name: true } },
+    },
+    orderBy: [{ employee: { name: 'asc' } }, { startDate: 'asc' }],
   });
 }

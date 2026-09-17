@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { DayPart, RequestStatus } from '../../generated/prisma/client.js';
+import { DayPart, RequestStatus, Role } from '../../generated/prisma/client.js';
 import { VALIDATION_MESSAGES as V } from '../../constants/messages.js';
 
 export const createLeaveRequestSchema = z
@@ -42,9 +42,21 @@ export const calendarQuerySchema = z.object({
   month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, V.CALENDAR_MONTH_INVALID),
 });
 
+export const hrCalendarQuerySchema = z
+  .object({
+    month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, V.CALENDAR_MONTH_INVALID),
+    employeeId: z.uuid(V.INVALID_EMPLOYEE_ID).optional(),
+    role: z.literal(Role.MANAGER).optional(),
+  })
+  .refine((data) => !data.role || !!data.employeeId, {
+    message: V.CALENDAR_ROLE_REQUIRES_EMPLOYEE_ID,
+    path: ['employeeId'],
+  });
+
 export type CreateLeaveRequestInput = z.infer<typeof createLeaveRequestSchema>;
 export type MyLeaveRequestsQueryInput = z.infer<typeof myLeaveRequestsQuerySchema>;
 export type LeaveRequestIdParams = z.infer<typeof leaveRequestIdParamsSchema>;
 export type RejectLeaveRequestInput = z.infer<typeof rejectLeaveRequestSchema>;
 export type CancelLeaveRequestInput = z.infer<typeof cancelLeaveRequestSchema>;
 export type CalendarQueryInput = z.infer<typeof calendarQuerySchema>;
+export type HrCalendarQueryInput = z.infer<typeof hrCalendarQuerySchema>;
