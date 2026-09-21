@@ -31,7 +31,9 @@ app.get('/health-check', (_req, res) => {
   sendSuccess(res, 200, 'Service is healthy');
 });
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiDocument));
+if (process.env.NODE_ENV !== 'production') {
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiDocument));
+}
 
 // app.get('/json-check', (_req, res) => {
 //   sendSuccess(res, 200, 'JSON payload is valid', { message: 'JSON payload is valid' });
