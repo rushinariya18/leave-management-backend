@@ -21,11 +21,6 @@ interface Actor {
   role: string;
 }
 
-// NOTE: HR is intentionally not special-cased anywhere in this module yet.
-// Every permission check below is scoped to EMPLOYEE/MANAGER; a future pass
-// can extend `assertCanDecide`/`assertCanView` to add HR's company-wide access
-// without needing to rewrite the checks that already exist.
-
 // ---- date helpers -----------------------------------------------------
 
 function toUtcDate(value: string | Date): Date {
