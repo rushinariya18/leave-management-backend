@@ -1,7 +1,9 @@
 import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
+import swaggerUi from 'swagger-ui-express';
 import { corsOptions } from './config/cors.js';
+import { openApiDocument } from './config/swagger.js';
 import { errorHandler } from './middlewares/error.middleware.js';
 import { notFound } from './middlewares/not-found.middleware.js';
 import { globalRateLimiter } from './middlewares/rate-limit.middleware.js';
@@ -28,6 +30,10 @@ app.use(requestLogger);
 app.get('/health-check', (_req, res) => {
   sendSuccess(res, 200, 'Service is healthy');
 });
+
+if (process.env.NODE_ENV !== 'production') {
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiDocument));
+}
 
 // app.get('/json-check', (_req, res) => {
 //   sendSuccess(res, 200, 'JSON payload is valid', { message: 'JSON payload is valid' });

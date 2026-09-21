@@ -15,6 +15,10 @@ import {
 
 const router = Router();
 
+/**
+ * @description List public holidays, optionally filtered by query parameters.
+ * @access Private
+ */
 router.get(
   '/',
   authenticate,
@@ -22,6 +26,10 @@ router.get(
   publicHolidayController.listHolidays,
 );
 
+/**
+ * @description Create a new public holiday.
+ * @access Private (HR)
+ */
 router.post(
   '/',
   authenticate,
@@ -30,6 +38,10 @@ router.post(
   publicHolidayController.createHoliday,
 );
 
+/**
+ * @description Update an existing public holiday.
+ * @access Private (HR)
+ */
 router.patch(
   '/:id',
   authenticate,
@@ -39,6 +51,10 @@ router.patch(
   publicHolidayController.updateHoliday,
 );
 
+/**
+ * @description Delete a public holiday.
+ * @access Private (HR)
+ */
 router.delete(
   '/:id',
   authenticate,

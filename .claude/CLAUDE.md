@@ -18,12 +18,14 @@ project-root/
 │   │   │   ├── user.controller.ts
 │   │   │   ├── user.service.ts
 │   │   │   ├── user.routes.ts
-│   │   │   └── user.validation.ts
+│   │   │   ├── user.validation.ts
+│   │   │   └── user.docs.ts
 │   │   └── products/
 │   │       ├── product.controller.ts
 │   │       ├── product.service.ts
 │   │       ├── product.routes.ts
-│   │       └── product.validation.ts
+│   │       ├── product.validation.ts
+│   │       └── product.docs.ts
 │   ├── middlewares/
 │   │   ├── error.middleware.ts
 │   │   ├── not-found.middleware.ts
