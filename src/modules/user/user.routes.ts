@@ -18,8 +18,22 @@ import {
 
 const router = Router();
 
+/**
+ * @description Get the authenticated user's own profile.
+ * @access Private
+ */
 router.get('/me', authenticate, userController.getMe);
+
+/**
+ * @description Update the authenticated user's own profile.
+ * @access Private
+ */
 router.patch('/me', authenticate, validate(updateProfileSchema), userController.updateProfile);
+
+/**
+ * @description Change the authenticated user's own password.
+ * @access Private
+ */
 router.patch(
   '/me/password',
   authenticate,
@@ -27,8 +41,16 @@ router.patch(
   userController.changePassword,
 );
 
+/**
+ * @description List all users eligible to be assigned as a manager.
+ * @access Private (HR)
+ */
 router.get('/managers', authenticate, authorize(Role.HR), userController.listManagers);
 
+/**
+ * @description List users, optionally filtered by query parameters.
+ * @access Private (HR, MANAGER)
+ */
 router.get(
   '/',
   authenticate,
@@ -37,6 +59,10 @@ router.get(
   userController.listUsers,
 );
 
+/**
+ * @description Get the details of a single user by id.
+ * @access Private (HR, MANAGER)
+ */
 router.get(
   '/:id',
   authenticate,
@@ -45,6 +71,10 @@ router.get(
   userController.getUserById,
 );
 
+/**
+ * @description Create a new user account.
+ * @access Private (HR)
+ */
 router.post(
   '/',
   authenticate,
@@ -53,6 +83,10 @@ router.post(
   userController.createUser,
 );
 
+/**
+ * @description Activate or deactivate a user account.
+ * @access Private (HR)
+ */
 router.patch(
   '/:id/status',
   authenticate,
@@ -61,6 +95,10 @@ router.patch(
   userController.setUserActive,
 );
 
+/**
+ * @description Assign or change the manager for a user.
+ * @access Private (HR)
+ */
 router.patch(
   '/:id/manager',
   authenticate,

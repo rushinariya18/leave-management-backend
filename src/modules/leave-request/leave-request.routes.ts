@@ -18,6 +18,10 @@ import {
 
 const router = Router();
 
+/**
+ * @description Create a new leave request for the authenticated employee.
+ * @access Private (EMPLOYEE, MANAGER)
+ */
 router.post(
   '/',
   authenticate,
@@ -26,6 +30,10 @@ router.post(
   leaveRequestController.createLeaveRequest,
 );
 
+/**
+ * @description List the authenticated user's own leave requests.
+ * @access Private (EMPLOYEE, MANAGER)
+ */
 router.get(
   '/me',
   authenticate,
@@ -34,6 +42,10 @@ router.get(
   leaveRequestController.listMyLeaveRequests,
 );
 
+/**
+ * @description List pending leave requests awaiting the manager's approval for their team.
+ * @access Private (MANAGER)
+ */
 router.get(
   '/team/pending',
   authenticate,
@@ -41,6 +53,10 @@ router.get(
   leaveRequestController.listTeamPendingRequests,
 );
 
+/**
+ * @description Get the team's leave calendar for a given period.
+ * @access Private (EMPLOYEE, MANAGER)
+ */
 router.get(
   '/calendar',
   authenticate,
@@ -49,6 +65,10 @@ router.get(
   leaveRequestController.getTeamCalendar,
 );
 
+/**
+ * @description Get the organization-wide leave calendar for HR.
+ * @access Private (HR)
+ */
 router.get(
   '/calendar/hr',
   authenticate,
@@ -57,6 +77,10 @@ router.get(
   leaveRequestController.getHrCalendar,
 );
 
+/**
+ * @description Get the details of a single leave request by id.
+ * @access Private (EMPLOYEE, MANAGER)
+ */
 router.get(
   '/:id',
   authenticate,
@@ -65,6 +89,10 @@ router.get(
   leaveRequestController.getLeaveRequest,
 );
 
+/**
+ * @description Cancel an existing leave request.
+ * @access Private (EMPLOYEE, MANAGER)
+ */
 router.post(
   '/:id/cancel',
   authenticate,
@@ -74,6 +102,10 @@ router.post(
   leaveRequestController.cancelLeaveRequest,
 );
 
+/**
+ * @description Approve a pending leave request for a direct report.
+ * @access Private (MANAGER)
+ */
 router.post(
   '/:id/approve',
   authenticate,
@@ -82,6 +114,10 @@ router.post(
   leaveRequestController.approveLeaveRequest,
 );
 
+/**
+ * @description Reject a pending leave request for a direct report.
+ * @access Private (MANAGER)
+ */
 router.post(
   '/:id/reject',
   authenticate,
@@ -91,6 +127,10 @@ router.post(
   leaveRequestController.rejectLeaveRequest,
 );
 
+/**
+ * @description Get the audit log history for a leave request.
+ * @access Private (EMPLOYEE, MANAGER)
+ */
 router.get(
   '/:id/audit-logs',
   authenticate,

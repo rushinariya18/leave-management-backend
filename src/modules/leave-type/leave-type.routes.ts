@@ -13,8 +13,16 @@ import {
 
 const router = Router();
 
+/**
+ * @description List all leave types.
+ * @access Private
+ */
 router.get('/', authenticate, leaveTypeController.listLeaveTypes);
 
+/**
+ * @description Get the details of a single leave type by id.
+ * @access Private
+ */
 router.get(
   '/:id',
   authenticate,
@@ -22,6 +30,10 @@ router.get(
   leaveTypeController.getLeaveType,
 );
 
+/**
+ * @description Create a new leave type.
+ * @access Private (HR)
+ */
 router.post(
   '/',
   authenticate,
@@ -30,6 +42,10 @@ router.post(
   leaveTypeController.createLeaveType,
 );
 
+/**
+ * @description Update an existing leave type.
+ * @access Private (HR)
+ */
 router.patch(
   '/:id',
   authenticate,
@@ -39,6 +55,10 @@ router.patch(
   leaveTypeController.updateLeaveType,
 );
 
+/**
+ * @description Delete a leave type.
+ * @access Private (HR)
+ */
 router.delete(
   '/:id',
   authenticate,
