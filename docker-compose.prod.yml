@@ -1,0 +1,40 @@
+# Production deployment.
+# Does not bundle a database — DATABASE_URL must point at an externally
+# managed Postgres instance (RDS, Cloud SQL, etc.). No secrets are read from
+# a checked-in file: every value below is expected to come from the host
+# environment or the deployment platform's secret store.
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: leave-management-backend:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: ${PORT:?PORT is required}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL is required}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:?JWT_EXPIRES_IN is required}
+      BCRYPT_SALT_ROUNDS: ${BCRYPT_SALT_ROUNDS:?BCRYPT_SALT_ROUNDS is required}
+      OTP_EXPIRY_MINUTES: ${OTP_EXPIRY_MINUTES:?OTP_EXPIRY_MINUTES is required}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:?ALLOWED_ORIGINS is required}
+      RATE_LIMIT_WINDOW_MS: ${RATE_LIMIT_WINDOW_MS:?RATE_LIMIT_WINDOW_MS is required}
+      RATE_LIMIT_MAX_REQUESTS: ${RATE_LIMIT_MAX_REQUESTS:?RATE_LIMIT_MAX_REQUESTS is required}
+      SIGNIN_RATE_LIMIT_WINDOW_MS: ${SIGNIN_RATE_LIMIT_WINDOW_MS:?SIGNIN_RATE_LIMIT_WINDOW_MS is required}
+      SIGNIN_RATE_LIMIT_MAX_REQUESTS: ${SIGNIN_RATE_LIMIT_MAX_REQUESTS:?SIGNIN_RATE_LIMIT_MAX_REQUESTS is required}
+      OTP_RATE_LIMIT_WINDOW_MS: ${OTP_RATE_LIMIT_WINDOW_MS:?OTP_RATE_LIMIT_WINDOW_MS is required}
+      OTP_RATE_LIMIT_MAX_REQUESTS: ${OTP_RATE_LIMIT_MAX_REQUESTS:?OTP_RATE_LIMIT_MAX_REQUESTS is required}
+      RESET_PASSWORD_RATE_LIMIT_WINDOW_MS: ${RESET_PASSWORD_RATE_LIMIT_WINDOW_MS:?RESET_PASSWORD_RATE_LIMIT_WINDOW_MS is required}
+      RESET_PASSWORD_RATE_LIMIT_MAX_REQUESTS: ${RESET_PASSWORD_RATE_LIMIT_MAX_REQUESTS:?RESET_PASSWORD_RATE_LIMIT_MAX_REQUESTS is required}
+    ports:
+      - '${PORT:-3000}:3000'
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
